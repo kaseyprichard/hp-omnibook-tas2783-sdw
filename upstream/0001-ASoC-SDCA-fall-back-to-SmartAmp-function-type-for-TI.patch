@@ -1,0 +1,81 @@
+From bad77ea86821137884b79b9d9e2a227ccec52b4e Mon Sep 17 00:00:00 2001
+From: Kasey Prichard <kasey.prichard@gmail.com>
+Date: Sat, 29 Aug 2026 17:04:05 -0500
+Subject: [PATCH 1/2] ASoC: SDCA: fall back to SmartAmp function type for TI
+ TAS2783
+
+On the HP OmniBook Ultra 14 (board 8EB4, Panther Lake) the four TI
+TAS2783 SmartAmp peripherals declare the SDCA Function Topology control
+(0x05) with access mode 0x03 and no mipi-sdca-control-dc-value, so
+find_sdca_function() rejects them ("function type only supported as
+DisCo constant"). No SmartAmp function is created, no speaker DAI
+exists and the internal speakers are silent. The RT712 on link 3 does
+provide a DC value and is unaffected.
+
+The same firmware defect was reported for the HP EliteBook X in
+thesofproject/linux#5760, where the conclusion was that the BIOS should
+supply a DC value, and HP fixed that machine with a BIOS update. The
+newest BIOS for 8EB4 (F.06, 2026-06-25) still ships access mode 0x03
+with no DC value for the amplifiers, so machines in the field need a
+fallback. Keep it minimal: a table of known peripherals (TAS2783,
+mfg 0x0102 part 0x0000, is always a SmartAmp) rather than reading the
+control from hardware, so functions can still be parsed before the
+device is available. Happy to drop this if HP commits to a BIOS fix
+for 8EB4.
+
+Link: https://github.com/thesofproject/linux/issues/5732
+Link: https://github.com/thesofproject/linux/issues/5760
+Assisted-by: Claude:claude-fable-5
+Signed-off-by: Kasey Prichard <kasey.prichard@gmail.com>
+---
+ sound/soc/sdca/sdca_functions.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sdca/sdca_functions.c b/sound/soc/sdca/sdca_functions.c
+index 7a7a9f1..c465090 100644
+--- a/sound/soc/sdca/sdca_functions.c
++++ b/sound/soc/sdca/sdca_functions.c
+@@ -87,6 +87,26 @@ static const char *get_sdca_function_name(u32 function_type)
+ 	}
+ }
+ 
++/*
++ * Some platform firmware declares the Function Topology control (0x05)
++ * with a read-only access mode and no DisCo constant, so the function
++ * type can only be learned by reading it from the hardware. Fall back to
++ * a table of known peripherals in that case.
++ *
++ * HP OmniBook Ultra 14 (board 8EB4) does this for its four TI TAS2783
++ * amplifiers, while its RT712 provides a DC value.
++ */
++static int sdca_fallback_function_type(struct sdw_slave *slave, u32 *function_type)
++{
++	/* Texas Instruments TAS2783 smart amplifier */
++	if (slave->id.mfg_id == 0x0102 && slave->id.part_id == 0x0000) {
++		*function_type = SDCA_FUNCTION_TYPE_SMART_AMP;
++		return 0;
++	}
++
++	return -ENODEV;
++}
++
+ static int find_sdca_function(struct acpi_device *adev, void *data)
+ {
+ 	struct fwnode_handle *function_node = acpi_fwnode_handle(adev);
+@@ -135,8 +155,11 @@ static int find_sdca_function(struct acpi_device *adev, void *data)
+ 	fwnode_handle_put(control5);
+ 
+ 	if (ret < 0) {
+-		dev_err(dev, "function type only supported as DisCo constant\n");
+-		return ret;
++		if (sdca_fallback_function_type(slave, &function_type)) {
++			dev_err(dev, "function type only supported as DisCo constant\n");
++			return ret;
++		}
++		dev_info(dev, "function type not a DisCo constant, using fallback for known peripheral\n");
+ 	}
+ 
+ 	if (!sdca_device_quirk_match(slave, SDCA_QUIRKS_SKIP_FUNC_TYPE_PATCHING)) {
+-- 
+2.55.0
+

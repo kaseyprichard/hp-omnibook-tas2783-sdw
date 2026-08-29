@@ -1,0 +1,177 @@
+     dvs:           Outcome        - Imported
+     dvs:           Driver INF     - sdcatitasxu.inf (oem88.inf)
+     dvs:           Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     dvs:           Driver Version - 12/08/2025,6.2.1.20
+     dvs: {Driver Setup Import Driver Package - exit (0x00000000)} 06:32:56.275
+     dvs: {Driver Setup Update Device: SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&LID_01&UID_0A&SUBSYS_8EB4103C\7&37dc6242&0&0000000000000001} 06:32:56.281
+     utl:      {Select Drivers - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&LID_01&UID_0A&SUBSYS_8EB4103C\7&37dc6242&0&0000000000000001} 06:32:56.281
+     utl:           Driver Node:
+     utl:                Status         - Selected | Installed
+     utl:                Driver INF     - sdcaclass.inf (C:\Windows\System32\DriverStore\FileRepository\sdcaclass.inf_amd64_cc39bca7ed03f7d8\sdcaclass.inf)
+     utl:                Class GUID     - {4d36e96c-e325-11ce-bfc1-08002be10318}
+     utl:                Driver Version - 06/21/2006,10.0.26100.7920
+     utl:                Configuration  - SDCA_10\AUDIOFUNCTION [SdcaClass_Device.NT]
+     utl:                Driver Rank    - 00FF3000
+     utl:                Signer Score   - Inbox (0D000003)
+     utl:           Driver Extension Node:
+     utl:                Status         - Selected
+     utl:                Driver INF     - oem88.inf (C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\sdcatitasxu.inf)
+     utl:                Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     utl:                Extension ID   - {790c1de0-aa33-4cb8-bb0c-f523c73b4aa1}
+     utl:                Driver Version - 12/08/2025,6.2.1.20
+     utl:                Configuration  - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C
+     utl:                Driver Rank    - 00FF0001
+     utl:                Signer Score   - WHQL (0D000005)
+     utl:                Submission ID  - 30035400_13773816504834821_1152921505700248606
+     utl:                Attributes     - Universal
+     utl:      {Select Drivers - exit(0x00000000} 06:32:56.299
+     dvs:      Installing best driver (sdcaclass.inf) on device 'SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&LID_01&UID_0A&SUBSYS_8EB4103C\7&37dc6242&0&0000000000000001'.
+     ump:      {Plug and Play Service: Device Install for SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&LID_01&UID_0A&SUBSYS_8EB4103C\7&37DC6242&0&0000000000000001}
+     dvi:           Install flags: 0x00010001
+     dvi:           {Core Device Install} 06:32:56.317
+     dvi:                {Configure Device - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&LID_01&UID_0A&SUBSYS_8EB4103C\7&37DC6242&0&0000000000000001} 06:32:56.317
+     dvi:                     Device Status: 0x0180200a
+     dvi:                     Config Flags: 0x00000000
+     dvi:                     Parent Device: SOUNDWIRE\SDCA_PERIPHERAL&MAN_0102&PART_0000&VER_03&CID_00&LID_01&UID_0A&SUBSYS_8EB4103C\6&1c8960a6&0&01000001020A0301
+     sto:                     {Configure Driver Package: C:\Windows\System32\DriverStore\FileRepository\sdcaclass.inf_amd64_cc39bca7ed03f7d8\sdcaclass.inf} 06:32:56.317
+     sto:                          Source Filter  = SDCA_10\AUDIOFUNCTION
+     inf:                          Config Options = IsolationCompat
+     inf:                          Class GUID     = {4d36e96c-e325-11ce-bfc1-08002be10318}
+     inf:                          Class Options  = Configurable
+     inf:                          {Configure Driver: SoundWire Audio}
+     inf:                               Section Name = SdcaClass_Device.NT
+     inf:                               {Add Service: SdcaClassInbox}
+     inf:                                    Flags         = 0x2
+     inf:                                    Start Type    = 3
+     inf:                                    Service Type  = 1
+     inf:                                    Error Control = 1
+     inf:                                    Image Path    = \SystemRoot\System32\DriverStore\FileRepository\sdcaclass.inf_amd64_cc39bca7ed03f7d8\SdcaClass.sys
+     inf:                                    Display Name  = SoundWire Audio Class Driver
+     inf:                                    Updated service 'SdcaClassInbox'.
+     inf:                               {Add Service: exit(0x00000000)}
+     inf:                               Compatible Id = SDCA_10\AUDIOFUNCTION
+     inf:                               {Configure Driver Configuration: SdcaClass_Device.NT}
+     inf:                                    Service Name  = SdcaClassInbox
+     inf:                                    Config Flags  = 0x00000000
+     inf:                               {Configure Driver Configuration: exit(0x00000000)}
+     inf:                          {Configure Driver: exit(0x00000000)}
+     flq:                          {FILE_QUEUE_COMMIT} 06:32:56.345
+     flq:                          {FILE_QUEUE_COMMIT - exit(0x00000000)} 06:32:56.345
+     sto:                          Driver configuration complete.
+     sto:                     {Configure Driver Package: exit(0x00000000)} 06:32:56.345
+     sto:                     {Configure Driver Package: C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\sdcatitasxu.inf} 06:32:56.345
+     sto:                          Source Filter  = SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C
+     inf:                          Config Options = IsolationCompat
+     inf:                          Class GUID     = {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     inf:                          Class Options  = Configurable
+     inf:                          {Configure Driver: SDCA Virtual XU Audio Driver}
+     inf:                               Section Name = Audio_Device.NT
+     inf:                               {Add Service: SDCATITASXu}
+     inf:                                    Start Type    = 3
+     inf:                                    Service Type  = 1
+     inf:                                    Error Control = 1
+     inf:                                    Image Path    = \SystemRoot\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\SDCATITASXu.sys
+     inf:                                    Display Name  = SDCA Virtual XU Audio Driver
+     inf:                                    Created new service 'SDCATITASXu'.
+     inf:                               {Add Service: exit(0x00000000)}
+     inf:                               Hardware Id  = SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C
+     inf:                               {Configure Driver Configuration: Audio_Device.NT}
+     inf:                                    No associated service.
+     inf:                                    Declarative Filters = SDCATITASXu
+     inf:                                    Config Flags  = 0x00000000
+     inf:                               {Configure Driver Configuration: exit(0x00000000)}
+     inf:                          {Configure Driver: exit(0x00000000)}
+     flq:                          {FILE_QUEUE_COMMIT} 06:32:56.397
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0x8.bin' to 'C:\Windows\System32\drivers\0-1-0x8.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0x9.bin' to 'C:\Windows\System32\drivers\0-1-0x9.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0xA.bin' to 'C:\Windows\System32\drivers\0-1-0xA.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0xB.bin' to 'C:\Windows\System32\drivers\0-1-0xB.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0xC.bin' to 'C:\Windows\System32\drivers\0-1-0xC.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0xD.bin' to 'C:\Windows\System32\drivers\0-1-0xD.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0xE.bin' to 'C:\Windows\System32\drivers\0-1-0xE.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-1-0xF.bin' to 'C:\Windows\System32\drivers\0-1-0xF.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0x8.bin' to 'C:\Windows\System32\drivers\0-2-0x8.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0x9.bin' to 'C:\Windows\System32\drivers\0-2-0x9.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0xA.bin' to 'C:\Windows\System32\drivers\0-2-0xA.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0xB.bin' to 'C:\Windows\System32\drivers\0-2-0xB.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0xC.bin' to 'C:\Windows\System32\drivers\0-2-0xC.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0xD.bin' to 'C:\Windows\System32\drivers\0-2-0xD.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0xE.bin' to 'C:\Windows\System32\drivers\0-2-0xE.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\0-2-0xF.bin' to 'C:\Windows\System32\drivers\0-2-0xF.bin'.
+     flq:                               Hardlinking 'C:\Windows\System32\DriverStore\FileRepository\sdcatitasxu.inf_amd64_83191c96cbfce18c\Firmwares\15E2-0-0x8.bin' to 'C:\Windows\System32\drivers\15E2-0-0x8.bin'.
+>>>  [Device Install (Hardware initiated) - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER\7&8a39fe9&0&00]
+>>>  Section start 2026/08/29 06:33:04.997
+     ump: Install needed due to device needing additional installation
+     utl: {Select Drivers - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER\7&8a39fe9&0&00} 06:33:05.007
+     utl:      Driver Node:
+     utl:           Status         - Selected
+     utl:           Driver INF     - sdcaaggregator.inf (C:\Windows\System32\DriverStore\FileRepository\sdcaaggregator.inf_amd64_17bf2e2fb8afb205\sdcaaggregator.inf)
+     utl:           Class GUID     - {4d36e96c-e325-11ce-bfc1-08002be10318}
+     utl:           Driver Version - 06/21/2006,10.0.26100.7920
+     utl:           Configuration  - SDCA\AGGREGATEDSPEAKER
+     utl:           Driver Rank    - 00FF0002
+     utl:           Signer Score   - Inbox (0D000003)
+     utl:      Driver Extension Node:
+     utl:           Status         - Selected
+     utl:           Driver INF     - oem51.inf (C:\Windows\System32\DriverStore\FileRepository\dtsapo4hpextensionpkg.inf_amd64_7a30cc1c8ddfb725\dtsapo4hpextensionpkg.inf)
+     utl:           Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     utl:           Extension ID   - {b410cf85-2754-43a3-8963-a5d32d640e22}
+     utl:           Driver Version - 12/09/2025,1.15.48.0
+     utl:           Configuration  - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER
+     utl:           Driver Rank    - 00FF0000
+     utl:           Signer Score   - WHQL (0D000005)
+     utl:           Submission ID  - 52048020_13922637044447666_1152921505700254031
+     utl:           Attributes     - Universal
+     utl:      Driver Extension Node:
+     utl:           Status         - Selected
+     utl:           Driver INF     - oem62.inf (C:\Windows\System32\DriverStore\FileRepository\hdx_hpext_apot_g5_ag80_aa48_sspp_sa_n_ptl.inf_amd64_5c45c79b39e84235\hdx_hpext_apot_g5_ag80_aa48_sspp_sa_n_ptl.inf)
+     utl:           Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     utl:           Extension ID   - {a9fae730-fe66-4d56-a160-29263e8ff026}
+     utl:           Driver Version - 05/18/2026,6.0.7.170
+     utl:           Configuration  - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER
+     utl:           Driver Rank    - 00FF0000
+     utl:           Signer Score   - WHQL (0D000005)
+     utl:           Submission ID  - 29989850_13682455576365082_1152921505701072625
+     utl:           Attributes     - Declarative
+     utl:      Driver Extension Node:
+     utl:           Status         - Selected
+     utl:           Driver INF     - oem66.inf (C:\Windows\System32\DriverStore\FileRepository\hdx_hpext_apot_g5_cnb_ffp_tse_at03dam89d-41_omni_ffp_hq_tse.inf_amd64_81e979634e0527b5\hdx_hpext_apot_g5_cnb_ffp_tse_at03dam89d-41_omni_ffp_hq_tse.inf)
+     utl:           Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     utl:           Extension ID   - {8232b627-30b1-4f3c-84c6-e103bd6feccb}
+     utl:           Driver Version - 05/18/2026,6.0.7.170
+     utl:           Configuration  - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER
+     utl:           Driver Rank    - 00FF0000
+     utl:           Signer Score   - WHQL (0D000005)
+     utl:           Submission ID  - 29989850_13682455576365082_1152921505701072625
+     utl:           Attributes     - Declarative
+     utl:      Driver Extension Node:
+     utl:           Status         - Selected
+     utl:           Driver INF     - oem68.inf (C:\Windows\System32\DriverStore\FileRepository\hdx_hpext_apot_gen5_gtse.inf_amd64_fdda6c33e2b9e460\hdx_hpext_apot_gen5_gtse.inf)
+     utl:           Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     utl:           Extension ID   - {3435f85a-6e2a-4284-90d8-2be4cf7a27dd}
+     utl:           Driver Version - 05/18/2026,6.0.7.170
+     utl:           Configuration  - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER
+     utl:           Driver Rank    - 00FF0000
+     utl:           Signer Score   - WHQL (0D000005)
+     utl:           Submission ID  - 29989850_13682455576365082_1152921505701072625
+     utl:           Attributes     - Declarative
+     utl:      Driver Extension Node:
+     utl:           Status         - Selected
+     utl:           Driver INF     - oem79.inf (C:\Windows\System32\DriverStore\FileRepository\sdcaapoext_hp_xperif4_rtk_gen4_tse_nongna.inf_amd64_1e7a8b4b4540e9be\sdcaapoext_hp_xperif4_rtk_gen4_tse_nongna.inf)
+     utl:           Class GUID     - {e2f84ce7-8efa-411c-aa69-97454ca4cb57}
+     utl:           Extension ID   - {e870c6b4-adc4-4445-8ecd-f5c0cf16fdad}
+     utl:           Driver Version - 05/14/2026,1.0.0.280
+     utl:           Configuration  - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER
+     utl:           Driver Rank    - 00FF0000
+     utl:           Signer Score   - WHQL (0D000005)
+     utl:           Submission ID  - 29989850_13811374838378741_1152921505701072686
+     utl:           Attributes     - Declarative
+     utl: {Select Drivers - exit(0x00000000} 06:33:05.053
+     dvi: Install flags: 0x00010000
+     dvi: {Core Device Install} 06:33:05.055
+     dvi:      {Configure Device - SOUNDWIRE\SDCA_FUNCTION_10&MAN_0102&FUNC_0001&TYPE_01&VER_00&ADR_01&SUBSYS_8EB4103C&AGGREGATEDSPEAKER\7&8a39fe9&0&00} 06:33:05.112
+     dvi:           Device Status: 0x0180200a
+     dvi:           Config Flags: 0x00000000
+     dvi:           Parent Device: SOUNDWIRE\SDCA_AGGREGATOR\6&1c8960a6&0
+     sto:           {Configure Driver Package: C:\Windows\System32\DriverStore\FileRepository\sdcaaggregator.inf_amd64_17bf2e2fb8afb205\sdcaaggregator.inf} 06:33:05.112
+     sto:                Source Filter  = SDCA\AGGREGATEDSPEAKER

@@ -1,0 +1,61 @@
+From 006f4e0dd4863922670349e8e41541a2fb683867 Mon Sep 17 00:00:00 2001
+From: Kasey Prichard <kasey.prichard@gmail.com>
+Date: Sat, 29 Aug 2026 17:04:05 -0500
+Subject: [PATCH 0/2] soundwire/SDCA: enable the four TAS2783 speakers on HP OmniBook Ultra 14
+
+The HP OmniBook Ultra 14 (DMI board 8EB4, BIOS F.06, Intel Panther Lake,
+Core Ultra X9 388H, sof-audio-pci-intel-ptl) has four TI TAS2783 SmartAmp
+peripherals, two on SoundWire link 1 and two on link 2, plus an RT712 on
+link 3. On a stock kernel there is no speaker output: no SmartAmp SDCA
+function is created, and even when one is, three of the four amplifiers
+drop UNATTACHED ~100-250 ms after attaching and firmware download fails.
+Reported at https://github.com/thesofproject/linux/issues/5732 (also
+#5877 and #5802).
+
+Two independent problems, one patch each:
+
+1. The BIOS declares the SDCA Function Topology control (0x05) for the
+   TAS2783 nodes with access mode 0x03 and no DC value, so snd-soc-sdca
+   refuses to create the function. This is the same defect as
+   thesofproject/linux#5760, where the outcome was a BIOS fix for the HP
+   EliteBook X; the newest 8EB4 BIOS (F.06, 2026-06-25) still lacks the
+   DC value. Patch 1 adds a minimal known-peripheral fallback. I am fine
+   dropping it if HP commits to a BIOS update for 8EB4 - sending it so
+   the machines in the field have something in the meantime.
+
+2. The static DSDT declares intel-sdw-doais = 1 / intel-sdw-doaise2 = 1
+   for every link, but SNDW._INI overwrites the LNKn packages from NVS
+   and the driver reads doais = 3 / doaise2 = 0. The amplifiers cannot
+   follow that ACTMCTL drive timing. Bisecting the fields at runtime:
+   DOAIS = 1 together with DOAISE2 = 1 is both necessary and sufficient;
+   DODS, CLDS and CLDE are irrelevant; DOAISE2 gates whether DOAIS is
+   honoured. Patch 2 adds a DMI-keyed override for the two fields and
+   applies it to links 1 and 2 of this board.
+
+Tested on v7.2.2 with otherwise stock soundwire-bus and
+snd-soc-tas2783-sdw modules and only these two changes: all four
+amplifiers attach and stay attached, firmware loads on the first
+attempt, zero PARITY errors at boot and after streaming, and each of
+the four speakers plays when driven alone. The bus enumerates at the
+ACPI-default 9.6 MHz; no clock change is needed.
+
+I am not sure a DMI quirk table in intel_auxdevice.c is the shape you
+want for this; happy to rework it (dmi-quirks.c, a machine-driver quirk,
+or a generic "trust the DSDT over NVS" option) if you prefer.
+
+ACPI dumps, the Windows-side comparison and UCM files:
+https://github.com/kaseyprichard/hp-omnibook-tas2783-sdw
+
+
+Kasey Prichard (2):
+  ASoC: SDCA: fall back to SmartAmp function type for TI TAS2783
+  soundwire: intel: override ACTMCTL DOAIS/DOAISE2 on HP OmniBook Ultra
+    14
+
+ drivers/soundwire/intel_auxdevice.c | 60 +++++++++++++++++++++++++++++
+ sound/soc/sdca/sdca_functions.c     | 27 ++++++++++++-
+ 2 files changed, 85 insertions(+), 2 deletions(-)
+
+-- 
+2.55.0
+

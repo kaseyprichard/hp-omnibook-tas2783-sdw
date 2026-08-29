@@ -1,0 +1,4 @@
+hardware/acpi/* linguist-generated=true
+windows/*.reg linguist-generated=true
+windows/*.hex linguist-generated=true
+windows/*.log linguist-generated=true

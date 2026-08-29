@@ -1,0 +1,125 @@
+From 006f4e0dd4863922670349e8e41541a2fb683867 Mon Sep 17 00:00:00 2001
+From: Kasey Prichard <kasey.prichard@gmail.com>
+Date: Sat, 29 Aug 2026 17:04:05 -0500
+Subject: [PATCH 2/2] soundwire: intel: override ACTMCTL DOAIS/DOAISE2 on HP
+ OmniBook Ultra 14
+
+The HP OmniBook Ultra 14 (board 8EB4, Panther Lake, BIOS F.06) has four
+TI TAS2783 SmartAmp peripherals, two each on SoundWire links 1 and 2.
+The static DSDT declares intel-sdw-doais = 1 and intel-sdw-doaise2 = 1
+for every link, but SNDW._INI then runs DCFG() on each LNKn package and
+overwrites those entries from NVS bytes (DAIn, DAXn, ...), and the
+values the driver actually reads are doais = 3, doaise2 = 0. With that
+ACTMCTL timing only one of the four amplifiers survives enumeration:
+the other three attach, answer DEVID reads, then drop off the bus
+within a few hundred ms and never come back, so there is no speaker
+output on Linux. Windows drives all four amplifiers on the same
+firmware.
+
+Bisecting the ACTMCTL fields at runtime shows that DOAIS = 1 together
+with DOAISE2 = 1 is both necessary and sufficient: with that pair all
+four amplifiers attach, download firmware on the first attempt and stay
+attached with no parity errors, and all four speakers play. DODS, CLDS
+and CLDE make no difference. DOAISE2 gates whether DOAIS is honoured,
+so neither field alone helps.
+
+Add a DMI-keyed override for the ACTMCTL fields, applied after the
+_DSD properties are read, and use it to force DOAIS = 1 / DOAISE2 = 1
+on links 1 and 2 of this board. Other links and other boards are
+untouched.
+
+Link: https://github.com/thesofproject/linux/issues/5732
+Assisted-by: Claude:claude-fable-5
+Signed-off-by: Kasey Prichard <kasey.prichard@gmail.com>
+---
+ drivers/soundwire/intel_auxdevice.c | 60 +++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+
+diff --git a/drivers/soundwire/intel_auxdevice.c b/drivers/soundwire/intel_auxdevice.c
+index 0b8107b..2619007 100644
+--- a/drivers/soundwire/intel_auxdevice.c
++++ b/drivers/soundwire/intel_auxdevice.c
+@@ -8,6 +8,7 @@
+ #include <linux/acpi.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
++#include <linux/dmi.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+@@ -152,6 +153,62 @@ static void generic_new_peripheral_assigned(struct sdw_bus *bus,
+ 		sdw->link_res->hw_ops->program_sdi(sdw, dev_num);
+ }
+ 
++/*
++ * Board-level overrides for the vendor-specific ACTMCTL timing fields.
++ *
++ * The _DSD values are patched in from NVS by the BIOS at _INI time and
++ * some boards ship values the attached peripherals cannot follow. On the
++ * HP OmniBook Ultra 14 (board 8EB4, BIOS F.06) the four TAS2783 amplifiers
++ * on links 1 and 2 only enumerate reliably with DOAIS=1 and DOAISE2=1;
++ * the BIOS provides DOAIS=3 and DOAISE2=0, with which three of the four
++ * amplifiers drop off the bus within a few hundred ms of attaching.
++ */
++struct sdw_intel_actmctl_quirk {
++	u8 link_mask;
++	u16 doais;
++	u16 doaise2;
++};
++
++static const struct sdw_intel_actmctl_quirk hp_omnibook_ultra_14_actmctl = {
++	.link_mask = BIT(1) | BIT(2),
++	.doais = 1,
++	.doaise2 = 1,
++};
++
++static const struct dmi_system_id sdw_intel_actmctl_quirk_table[] = {
++	{
++		/* HP OmniBook Ultra 14 (kd0xxx), 4x TAS2783 on links 1/2 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_BOARD_NAME, "8EB4"),
++		},
++		.driver_data = (void *)&hp_omnibook_ultra_14_actmctl,
++	},
++	{}
++};
++
++static void sdw_intel_apply_actmctl_quirk(struct sdw_bus *bus,
++					  struct sdw_intel_prop *intel_prop)
++{
++	const struct sdw_intel_actmctl_quirk *quirk;
++	const struct dmi_system_id *id;
++
++	id = dmi_first_match(sdw_intel_actmctl_quirk_table);
++	if (!id)
++		return;
++
++	quirk = id->driver_data;
++	if (!(quirk->link_mask & BIT(bus->link_id)))
++		return;
++
++	dev_info(bus->dev, "ACTMCTL quirk: doais %#x -> %#x, doaise2 %#x -> %#x\n",
++		 intel_prop->doais, quirk->doais,
++		 intel_prop->doaise2, quirk->doaise2);
++
++	intel_prop->doais = quirk->doais;
++	intel_prop->doaise2 = quirk->doaise2;
++}
++
+ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+ {
+ 	struct sdw_master_prop *prop = &bus->prop;
+@@ -235,6 +292,9 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+ 	fwnode_property_read_u16(link,
+ 				 "intel-sdw-dods",
+ 				 &intel_prop->dods);
++
++	sdw_intel_apply_actmctl_quirk(bus, intel_prop);
++
+ 	bus->vendor_specific_prop = intel_prop;
+ 
+ 	dev_dbg(bus->dev, "doaise %#x doais %#x dodse %#x dods %#x\n",
+-- 
+2.55.0
+
