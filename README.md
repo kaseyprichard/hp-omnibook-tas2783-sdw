@@ -60,6 +60,45 @@ controls `Left Spk Switch`, `Right Spk Switch`, `Left Spk2 Switch`,
 `Right Spk2 Switch` (with the `Switch` suffix); a UCM that csets `Left Spk` fails
 to load the HiFi verb.
 
+## How this was found
+
+28 numbered single-change experiments on the machine, most of them a full
+instrumented reboot with a captured boot log, over two days. Everything was done
+with AI assistance (Claude Code, model `claude-fable-5`) driving the
+hypothesis/experiment loop; both patches carry an `Assisted-by:` trailer per the
+kernel's `Documentation/process/coding-assistants.rst`, and all of it was
+reviewed and boot-tested by a human. Condensed index (one reboot per row unless
+noted):
+
+| # | Hypothesis | Result |
+|---|---|---|
+| 0001 | ACPI missing SDCA function type → assume SmartAmp for TI | **Keep.** 4 amps visible, Speaker PCM exists |
+| 0002 | Program BUF0 before firmware, like Windows | Ordering irrelevant |
+| 0003 | Cap amp links at 4.8 MHz | PARITY 993→0; one amp gets firmware (superseded by 0026) |
+| 0004–0005 | Treat clock-base `-ENODATA` as success; retry FW | Second amp per link still ignores SCP |
+| 0006 | Serialize FW download; skip DAI without FW | Needed at the time; one amp still `-5` |
+| 0007–0008 | Skip device number 2 | Hypothesis wrong — device ignores SCP as 3 too |
+| 0009 | Clock-scale `-ENODATA` during prepare = success | Speaker PCM can open with 1 live amp |
+| 0010 | 400 ms defer so the 32 KB blob misses ping traffic | Work cancelled by NPRESENT |
+| 0011 | Trust ping over sticky UNATTACHED | Bus melted: PARITY 769, reset loop |
+| 0012 | Keep firmware in codec across a short blip | Amp survives one blip |
+| 0013 | Ignore drop only if ping already attached | Never fired |
+| 0014 | Retry ping 3×50 ms | Ping stays 0; last stable single-amp boot |
+| 0015 | Debounce UNATTACHED 2 s | Bus melted: Dummy Output |
+| 0016 | Proceed io_init while UNATTACHED | Amp dead |
+| 0017 | Skip if unattached; retry on next attach | PCM back; global mutex blocked the other link |
+| 0018 | Per-link mutex; abort blob on unattach | Clean FW; Speaker `-EINVAL` on dead-amp resume |
+| 0019 | Resume returns 0 without FW | Speaker opens, HiFi sink, PARITY 0 — one speaker audible |
+| 0020 | Start amp links 2 s after the SOF DSP boot | Marginal amps never attach after the boot |
+| 0021 | Sublink power-cycle + register snapshots around DSP boot | No register fingerprint; repower useless |
+| 0022 | Runtime knob box: IOCTL / LVSCTL / ACTMCTL / repower (live trials) | **`ACTMCTL=0xd0ef` → all four amps attach + FW, live and at boot** |
+| 0023 | Bisect the ACTMCTL fields (live trials) | **DOAIS=1 + DOAISE2=1 necessary and sufficient**; DOAISE2 gates DOAIS |
+| 0024 | DMI quirk (this patch) instead of the knob | 4/4 firmware first try, PARITY 0, four tones |
+| 0025 | Drop the 2 s late start | Identical — late start unnecessary |
+| 0026 | Drop the 4.8 MHz cap (ACPI-default 9.6 MHz) | Identical — clock cap unnecessary |
+| 0027 | Stock bus + stock codec, quirk only | Identical — **the quirk is the whole fix** |
+| 0028 | Pristine v7.2.2 `intel_auxdevice.c` + quirk patch only | Identical — series boot-tested as written |
+
 ## Repository contents
 
 * `upstream/` — the two patches as a `git am`-able series with cover letter
@@ -75,6 +114,7 @@ to load the HiFi verb.
 
 ## Status
 
-Submitted to linux-sound / SoundWire / SDCA maintainers as a 2-patch series
-(see `upstream/0000-cover-letter.patch`). Until it lands, apply the patches
-to your kernel or rebuild `soundwire-intel` and `snd-soc-sdca` out of tree.
+Submitted as a PR to thesofproject/linux `topic/sof-dev` and reported in
+thesofproject/linux#5732; the same series (see `upstream/0000-cover-letter.patch`)
+goes to the linux-sound / SoundWire / SDCA maintainers. Until it lands, apply the
+patches to your kernel or rebuild `soundwire-intel` and `snd-soc-sdca` out of tree.

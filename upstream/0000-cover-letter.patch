@@ -39,6 +39,17 @@ attempt, zero PARITY errors at boot and after streaming, and each of
 the four speakers plays when driven alone. The bus enumerates at the
 ACPI-default 9.6 MHz; no clock change is needed.
 
+How this was found: 28 numbered single-change experiments on the
+affected machine, most of them a full instrumented reboot with a
+captured boot log, ending in a live runtime bisect of the ACTMCTL
+fields; experiments 0024-0028 then reverted every other change to prove
+these two patches alone are sufficient on otherwise pristine v7.2.2
+files. The debugging and the patches were AI-assisted (Claude Code,
+model claude-fable-5); both commits carry an Assisted-by: trailer per
+Documentation/process/coding-assistants.rst, and I have reviewed and
+boot-tested everything submitted here myself. The experiment index is
+summarised in the repository below.
+
 I am not sure a DMI quirk table in intel_auxdevice.c is the shape you
 want for this; happy to rework it (dmi-quirks.c, a machine-driver quirk,
 or a generic "trust the DSDT over NVS" option) if you prefer.
