@@ -54,6 +54,11 @@ Rebuild `soundwire-intel` and `snd-soc-sdca` (CachyOS/clang kernels need `LLVM=1
 install, reboot. Check `cat /sys/bus/soundwire/devices/sdw:*/status` shows all
 five slaves `Attached` and `dmesg | grep -c PARITY` is ~0.
 
+The TAS2783 calibration blobs now ship in `linux-firmware` (verified in
+`linux-firmware-other 20260810-2`); extracting them from the Windows driver is
+no longer necessary. On kernels that request them without the `0x` filename
+prefix, alias symlinks are needed — see `arch-7.1.9/`.
+
 Userspace: PipeWire needs a UCM `Speaker` device for `hw:0,2` — `ucm/` in this
 repo, `sudo ucm/install.sh`. Note the 7.2.2 machine driver names the mute
 controls `Left Spk Switch`, `Right Spk Switch`, `Left Spk2 Switch`,
@@ -111,6 +116,11 @@ noted):
 * `windows/` — what Windows does with the same hardware (registry SoundWire
   enumeration, SetupAPI log excerpt, calibration EFI variable), see
   `windows/NOTES.md`.
+* `arch-7.1.9/` — port to Arch Linux's 7.1.9-arch1-2 kernel, with scripts. Two
+  further defects appear on 7.1.9 that do not on 7.2.2: the TAS2783 calibration
+  blobs are requested without the `0x` filename prefix that `linux-firmware`
+  ships them under, and the machine driver emits no `spk:` tag, so UCM never
+  includes the speaker. See `arch-7.1.9/README.md`.
 
 ## Status
 

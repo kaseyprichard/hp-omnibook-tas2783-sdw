@@ -1,0 +1,4 @@
+build-sdw-intel/*
+build-sdca/*
+!build-sdw-intel/Makefile
+!build-sdca/Makefile
